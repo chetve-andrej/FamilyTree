@@ -1,0 +1,63 @@
+﻿@model IEnumerable<FamilyTreeMVC.Models.Member>
+@{
+    ViewBag.Title = "Adding";
+}
+
+<h2>Создание члена семьи</h2>
+
+
+@using (Html.BeginForm("Add","Member")) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Член семьи</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <p>Имя:<input name="firstName" type="text" /></p>
+                <p>Фамилия:<input name="lastName" type="text" /></p>
+                <p>Отчество:<input name="midleName" type="text" /></p>
+                <p>Пол:<select name="sex">
+                        <option value="1">Мужской</option>
+                        <option value="0">Женский</option>
+                        </select></p>
+                <p>Дата рождения: <input type="date" name="birthDay"></p>
+                <p>Дата смерти: <input type="date" name="deathDay"></p>
+                <p>
+                    Отец:<select name="fatherId">
+                    <option value="0">Не задано</option>
+                       @foreach (var item in Model.Where(m=>m.SEX==1))
+                       {
+                        <option value="@item.FID">@String.Format("{0} {1} {2}, {3}год",item.FirstName,item.LastName,string.IsNullOrEmpty(item.MidleName)?"":item.MidleName,item.BirthDay.Value.Year)</option>            
+                       }
+                    </select>
+                </p>
+                <p>
+                    Мать:<select name="motherId">
+                             <option value="0">Не задано</option>
+                        @foreach (var item in Model.Where(m => m.SEX == 0))
+                        {
+                            <option value="@item.FID">@String.Format("{0} {1} {2}, {3}год", item.FirstName, item.LastName, string.IsNullOrEmpty(item.MidleName) ? "" : item.MidleName, item.BirthDay.Value.Year)</option>
+                        }
+                    </select>
+                </p>
+
+
+                <input type="submit" value="Создать" class="btn btn-default" />
+</div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Перейти к древу", "FamilyTree")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
